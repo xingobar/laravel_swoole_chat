@@ -19,6 +19,40 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                // connect swoole websocket
+                var socket = io('http://127.0.0.1:1215', { transports: ['websocket'], path:'/ws'})
+
+
+                socket.on('connect', function() {
+                    // 發送到後端的 example event
+                    socket.emit('example', 'hi')
+
+                    socket.on('disconnect', function() {
+                        console.log('disconnect')
+                    })
+
+                    // 監聽 example
+                    socket.on('example', function(msg) {
+                        console.log('example event receive data: ', msg)
+                    })
+
+                    // 監聽 message
+                    socket.on('message', function(msg) {
+                        console.log('message event receive message: ', msg)
+                    })
+
+                    socket.on('error', function() {
+                        console.log('error')
+                    })
+                })
+            })
+        </script>
     </head>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
